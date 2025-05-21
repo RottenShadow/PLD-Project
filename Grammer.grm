@@ -1,0 +1,83 @@
+"Name"     = 'Enter the name of the grammar'
+"Author"   = 'Enter your name'
+"Version"  = 'The version of the grammar and/or language'
+"About"    = 'A short description of the grammar'
+
+"Start Symbol" = <Program>
+
+
+! -------------------------------------------------
+! Terminals
+! -------------------------------------------------
+
+Identifier    = [_]|{letter}{Alphanumeric}*
+Digits        = {digit}+ ('.'{digit}+)?
+
+! -------------------------------------------------
+! Rules
+! -------------------------------------------------
+
+<Program> ::= go <Stms_list> end
+
+<Stms_list> ::= <Stmt>
+              | <Stmt><Stms_list>
+
+<Stmt> ::= <Assignment>
+         | <Print_Stmt>
+         | <If_Stmt>
+         | <While_Stmt>
+         | <For_Stmt>
+         | <For_In_Stmt>
+
+<Data> ::= int |double |num |String
+
+<Assignment> ::= Identifier '=' <Expression>
+                |<Data> Identifier '=' <Expression>
+
+<Print_Stmt> ::= 'print' '(' <Expression> ')'
+
+<If_Stmt> ::= 'if' '(' <Condition> ')' ':' <Stms_list> 'end'
+             |'if' '(' <Condition> ')' ':' <Stms_list> 'end' <Elif_Stmts> <Else_Stmt>
+             |'if' '(' <Condition> ')' ':' <Stms_list> 'end' <Else_Stmt> 
+
+<Elif_Stmts> ::= 'elif' '(' <Condition> ')' ':' <Stms_list> 'end' <Elif_Stmts>
+               | 'elif' '(' <Condition> ')' ':' <Stms_list> 'end'
+
+<Else_Stmt> ::= 'else' ':' <Stms_list> 'end'
+
+<While_Stmt> ::= 'while' '(' <Condition> ')' ':' <Stms_list> 'end'
+
+<For_Stmt> ::= 'for' '('<Assignment> ';' <Condition> ';' <Step> ')' ':' <Stms_list> 'end'
+
+<For_In_Stmt> ::= 'for' Identifier 'in' Identifier ':' <Stms_list> 'end'
+
+<op>::= '>'|'<'|'<='|'>='|'=='|'!='
+<OrAndOp>::= '||' | '&&'
+
+<Condition> ::= <Expression> <op> <Expression>
+             |  <Expression> <op> <Expression> <OrAndOp> <Condition> 
+
+
+<Expression> ::= <Expression> '+' <Mult Exp>
+            | <Expression> '-' <Mult Exp>
+            | <Mult Exp> 
+
+<Mult Exp> ::= <Mult Exp> '*' <Pow Exp> 
+             | <Mult Exp> '/' <Pow Exp> 
+             | <Pow Exp>
+             
+<Pow Exp> ::= <Pow Exp> '**' <Negate Exp> 
+            | <Negate Exp>
+
+<Negate Exp> ::= '-' <Value> 
+               | <Value> 
+
+<Value> ::= Digits
+          | Identifier
+          | '(' <Expression> ')'
+
+<Step> ::= '++'Identifier
+          |'--'Identifier
+          |Identifier'++'
+          |Identifier'--'
+          |<Assignment>
